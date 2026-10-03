@@ -18,7 +18,7 @@
   --text:#171717; --text-2:#525252; --text-3:#a3a3a3;
   --border:#e5e5e5; --border-2:#d4d4d4;
   --accent:#171717; --accent-fg:#fafafa; --accent-soft:#f0f0f0;
-  --danger:#dc2626;
+  --danger:#dc2626; --live:#16a34a;
   --shadow-xs:0 1px 2px rgba(0,0,0,.04);
   --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.03);
   --shadow-md:0 4px 12px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.03);
@@ -31,14 +31,14 @@ html[data-theme="pink"]{
   --text:#3f1d2c; --text-2:#7a5468; --text-3:#b895a6;
   --border:#f0dae4; --border-2:#e5c4d4;
   --accent:#be185d; --accent-fg:#ffffff; --accent-soft:#fbe7f0;
-  --danger:#dc2626;
+  --danger:#dc2626; --live:#16a34a;
 }
 html[data-theme="sky"]{
   --bg:#f6fafe; --surface:#ffffff; --surface-2:#eef6fc; --surface-3:#dcecf8;
   --text:#0f2b42; --text-2:#3d5a75; --text-3:#8ba3b8;
   --border:#d9e8f3; --border-2:#bcd4e6;
   --accent:#0369a1; --accent-fg:#ffffff; --accent-soft:#e4f0fa;
-  --danger:#dc2626;
+  --danger:#dc2626; --live:#16a34a;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
@@ -64,7 +64,6 @@ input,textarea{background:none;border:0;outline:none;}
 .screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;background:var(--bg);}
 .screen.active{display:flex;}
 
-/* ============ HOME ============ */
 .home{
   flex:1;display:flex;flex-direction:column;justify-content:space-between;
   padding:calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
@@ -126,26 +125,20 @@ input,textarea{background:none;border:0;outline:none;}
 .btn-wide{width:100%;}
 .btn[disabled]{opacity:.5;cursor:not-allowed;}
 
-/* ============ TOPBAR ============ */
 .topbar{
   display:flex;align-items:center;gap:8px;
   padding:calc(14px + env(safe-area-inset-top)) 16px 14px;
   flex:0 0 auto;border-bottom:1px solid var(--border);
   background:var(--bg);
 }
-.topbar h2{
-  margin:0;font-size:15px;font-weight:600;letter-spacing:-0.01em;
-  flex:1;text-align:center;
-}
+.topbar h2{margin:0;font-size:15px;font-weight:600;letter-spacing:-0.01em;flex:1;text-align:center;}
 .icon-btn{
   width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
   color:var(--text-2);transition:background .15s,color .15s;
 }
 .icon-btn:hover{background:var(--surface-2);color:var(--text);}
 .icon-btn:active{background:var(--surface-3);}
-.icon-btn.placeholder{visibility:hidden;pointer-events:none;}
 
-/* ============ FEED ============ */
 .feed-head{
   padding:16px 16px 12px;flex:0 0 auto;
   display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -154,6 +147,16 @@ input,textarea{background:none;border:0;outline:none;}
 .feed-head .title{
   font-size:12px;font-weight:500;color:var(--text-3);
   text-transform:uppercase;letter-spacing:0.08em;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--text-3);
+  transition:background .3s;
+}
+.live-dot.on{background:var(--live);animation:livePulse 2s ease-in-out infinite;}
+@keyframes livePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,.5);}
+  50%{box-shadow:0 0 0 5px rgba(22,163,74,0);}
 }
 .feed-scroll{
   flex:1;min-height:0;overflow-y:auto;
@@ -208,7 +211,8 @@ input,textarea{background:none;border:0;outline:none;}
 .comments{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
 .comments.open{display:block;}
 .c-list{display:flex;flex-direction:column;gap:12px;max-height:280px;overflow-y:auto;margin-bottom:12px;}
-.c-item{display:flex;gap:9px;align-items:flex-start;}
+.c-item{display:flex;gap:9px;align-items:flex-start;animation:cmtIn .25s ease;}
+@keyframes cmtIn{from{opacity:0;transform:translateY(-3px);}to{opacity:1;transform:none;}}
 .c-ava{
   width:24px;height:24px;border-radius:6px;flex:0 0 auto;
   background:var(--surface-2);color:var(--text-2);
@@ -256,7 +260,6 @@ input,textarea{background:none;border:0;outline:none;}
 }
 @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
 
-/* ============ EDITOR ============ */
 .editor-body{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
 .stage-wrap{
   flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
@@ -286,10 +289,7 @@ input,textarea{background:none;border:0;outline:none;}
 .h-br{left:100%;top:100%;transform:translate(-50%,-50%);cursor:nwse-resize;}
 .h-l{left:0;top:50%;transform:translate(-50%,-50%);cursor:ew-resize;}
 .h-r{left:100%;top:50%;transform:translate(-50%,-50%);cursor:ew-resize;}
-.h-rot{
-  left:50%;top:0;transform:translate(-50%,-50%) translateY(calc(-30px / var(--s)));
-  cursor:grab;border-radius:50%;
-}
+.h-rot{left:50%;top:0;transform:translate(-50%,-50%) translateY(calc(-30px / var(--s)));cursor:grab;border-radius:50%;}
 .h-rot::after{
   content:"";position:absolute;left:50%;top:100%;
   width:calc(1.5px / var(--s));height:calc(24px / var(--s));
@@ -306,10 +306,6 @@ input,textarea{background:none;border:0;outline:none;}
   text-transform:uppercase;letter-spacing:0.08em;
 }
 .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-.row-label{
-  font-size:12px;font-weight:500;color:var(--text-2);
-  min-width:64px;display:flex;align-items:center;gap:6px;
-}
 .chip{
   height:30px;padding:0 12px;border-radius:7px;
   font-size:12.5px;font-weight:500;
@@ -373,7 +369,6 @@ textarea.text-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
 .toolbar button:hover{background:var(--surface-2);color:var(--text);}
 .toolbar button:active{background:var(--surface-3);}
 
-/* ============ MODAL ============ */
 #modalRoot{position:fixed;inset:0;display:none;z-index:60;}
 #modalRoot.open{display:block;}
 .modal-bg{
@@ -426,10 +421,6 @@ textarea.text-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
   border-color:var(--accent);
   box-shadow:0 0 0 3px var(--accent-soft);
 }
-.field .hint{
-  margin-top:4px;font-size:11.5px;color:var(--text-3);
-  display:flex;justify-content:space-between;
-}
 .preview-thumb{
   width:100%;max-height:220px;object-fit:contain;
   border-radius:10px;background:var(--surface-2);
@@ -437,7 +428,6 @@ textarea.text-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
 }
 .modal-actions{display:flex;gap:8px;margin-top:22px;}
 
-/* ============ BANNER ============ */
 #banner{
   position:fixed;top:calc(12px + env(safe-area-inset-top));
   left:50%;transform:translateX(-50%) translateY(-160%);
@@ -462,7 +452,7 @@ textarea.text-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
   font-size:12.5px;font-weight:500;color:var(--accent);
   padding:6px 10px;border-radius:6px;
   background:var(--accent-soft);
-  transition:background .15s;
+  transition:background .15s;text-decoration:none;
 }
 #banner .b-link:hover{background:var(--surface-3);}
 #banner .b-close{
@@ -473,7 +463,6 @@ textarea.text-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
 }
 #banner .b-close:hover{background:var(--surface-2);color:var(--text);}
 
-/* ============ TOAST ============ */
 #toast{
   position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));
   transform:translate(-50%,24px);
@@ -487,7 +476,6 @@ textarea.text-area:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
 }
 #toast.show{opacity:1;transform:translate(-50%,0);}
 
-/* ============ LOADER ============ */
 #loader{
   position:fixed;inset:0;display:none;align-items:center;justify-content:center;
   background:rgba(250,250,250,.75);
@@ -504,7 +492,6 @@ html[data-theme="sky"] #loader{background:rgba(246,250,254,.78);}
 }
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ============ MISC ============ */
 .fade-in{animation:fadeSlide .3s cubic-bezier(.22,1,.36,1);}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
@@ -600,13 +587,13 @@ html[data-theme="sky"] #loader{background:rgba(246,250,254,.78);}
       </button>
     </div>
     <div class="feed-head">
-      <span class="title">Terbaru</span>
+      <span class="title"><span class="live-dot" id="liveDot"></span><span id="feedLabel">Memuat…</span></span>
       <button class="btn btn-primary" id="btnCompose" style="height:34px;padding:0 14px;font-size:13px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Buat
       </button>
     </div>
-    <div class="feed-scroll"><div class="feed-list" id="feedList"></div></div>
+    <div class="feed-scroll" id="feedScroll"><div class="feed-list" id="feedList"></div></div>
   </section>
 
   <section id="screen-editor" class="screen">
@@ -665,7 +652,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getDatabase, ref as dbRef, push as dbPush, set as dbSet, remove as dbRemove,
-  get as dbGet, query as dbQuery, orderByChild, limitToLast
+  onValue, query as dbQuery, orderByChild, limitToLast
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
@@ -690,7 +677,6 @@ const SVG = {
   heart: '<svg class="ico-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>',
   comment: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
   send: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
-  image: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>',
   wifi: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
   lock: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
   sparkle: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>',
@@ -710,13 +696,15 @@ const RATIOS = { "1:1": [1080, 1080], "4:5": [1080, 1350], "16:9": [1080, 608], 
 const FONTS = ["Inter", "Playfair Display", "DM Serif Display", "Lora", "Space Grotesk", "Bebas Neue", "Caveat", "JetBrains Mono"];
 const TEXT_COLORS = ["#171717", "#525252", "#a3a3a3", "#ffffff", "#be185d", "#0369a1", "#15803d", "#a16207", "#7e22ce", "#b91c1c"];
 const BG_COLORS = ["#ffffff", "#fafafa", "#f5f5f5", "#e5e5e5", "#fdf7fa", "#f6fafe", "#fef9c3", "#f0fdf4", "#f5f3ff", "#171717", "#0a0a0a", "#1e293b"];
-const MAX_BYTES = 780 * 1024;
+const MAX_BYTES = 700 * 1024;
 const MAX_DATAURL_LEN = 1100000;
 const LIKE_CD = 5000;
 const COMMENT_CD = 10000;
-const FEED_LIMIT = 12;
+const FEED_LIMIT = 8;
 
 let app = null, db = null, auth = null, fbReady = false, fbError = "";
+let postsUnsub = null;
+const commentUnsubs = new Map();
 
 const state = {
   theme: localStorage.getItem("sharingit_theme") || "mono",
@@ -732,7 +720,9 @@ const state = {
   posts: [],
   expanded: new Set(),
   posting: false,
-  elZ: 1
+  elZ: 1,
+  feedKey: "",
+  timesTimer: null
 };
 
 let scale = 1;
@@ -761,9 +751,16 @@ function setTheme(t) {
 }
 
 function go(name) {
+  const leavingFeed = state.screen === "feed" && name !== "feed";
   state.screen = name;
   $$(".screen").forEach(s => s.classList.toggle("active", s.id === "screen-" + name));
-  if (name === "feed") loadFeed();
+  if (name === "feed") {
+    attachPostsListener();
+    startTimesTimer();
+  } else if (leavingFeed) {
+    detachFeedListeners();
+    stopTimesTimer();
+  }
   if (name === "editor") requestAnimationFrame(fitStage);
 }
 
@@ -1377,48 +1374,135 @@ function hideBanner() { $("#banner").classList.remove("show"); }
 $("#bClose").innerHTML = SVG.close;
 $("#bClose").addEventListener("click", hideBanner);
 
-/* ============ FEED ============ */
-async function loadFeed() {
+/* ============ REALTIME LISTENERS ============ */
+function setLive(on, label) {
+  const dot = $("#liveDot");
+  const lbl = $("#feedLabel");
+  if (dot) dot.classList.toggle("on", !!on);
+  if (lbl && label) lbl.textContent = label;
+}
+
+function attachPostsListener() {
+  if (postsUnsub || !fbReady) return;
   const list = $("#feedList");
-  list.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  if (!fbReady) {
-    list.innerHTML =
-      '<div class="empty">' +
-        '<div class="empty-icon">' + SVG.wifi + '</div>' +
-        '<h3>Belum tersambung</h3>' +
-        '<p>' + esc(fbError || "Menghubungkan ke server...") + '</p>' +
-      '</div>';
-    return;
-  }
-  try {
-    const postsRef = dbRef(db, "posts");
-    const q = dbQuery(postsRef, orderByChild("createdAt"), limitToLast(FEED_LIMIT));
-    const snap = await dbGet(q);
+  if (!state.posts.length) list.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  setLive(false, "Menghubungkan…");
+
+  const postsRef = dbRef(db, "posts");
+  const q = dbQuery(postsRef, orderByChild("createdAt"), limitToLast(FEED_LIMIT));
+
+  postsUnsub = onValue(q, snap => {
     const arr = [];
-    snap.forEach(child => {
-      const v = child.val() || {};
-      arr.push(Object.assign({ id: child.key }, v));
-    });
+    snap.forEach(child => arr.push(Object.assign({ id: child.key }, child.val() || {})));
     arr.reverse();
+
+    const uid = state.user ? state.user.uid : "";
+    const newKey = arr.map(p => {
+      const likes = p.likes || {};
+      return p.id + ":" + Object.keys(likes).length + ":" + (likes[uid] ? "1" : "0");
+    }).join("|");
+
     state.posts = arr;
-    renderFeed();
-  } catch (e) {
-    console.error("[Sharing-it] loadFeed error:", e);
-    const msg = (e && e.message) || "";
-    let inner;
-    if (/permission|denied/i.test(msg)) {
-      inner = '<div class="empty-icon">' + SVG.lock + '</div><h3>Akses ditolak</h3><p>Rules menolak permintaan. Periksa database.rules.json.</p>';
-    } else if (/network|failed to fetch/i.test(msg)) {
-      inner = '<div class="empty-icon">' + SVG.wifi + '</div><h3>Tidak ada koneksi</h3><p>Periksa jaringan internet kamu.</p>';
-    } else {
-      inner = '<div class="empty-icon">' + SVG.plain + '</div><h3>Gagal memuat</h3><p>' + esc(msg.slice(0, 120)) + '</p>';
+    setLive(true, "Live · " + arr.length + " karya");
+
+    if (newKey !== state.feedKey) {
+      state.feedKey = newKey;
+      if (state.screen === "feed") renderFeed();
     }
-    list.innerHTML = '<div class="empty">' + inner + '</div>';
+  }, err => {
+    console.error("[Sharing-it] posts listener error:", err);
+    setLive(false, "Terputus");
+    const msg = (err && err.message) || "";
+    if (/permission|denied/i.test(msg)) {
+      list.innerHTML = '<div class="empty"><div class="empty-icon">' + SVG.lock + '</div><h3>Akses ditolak</h3><p>Rules menolak permintaan. Periksa database.rules.json.</p></div>';
+    } else if (/network/i.test(msg)) {
+      list.innerHTML = '<div class="empty"><div class="empty-icon">' + SVG.wifi + '</div><h3>Tidak ada koneksi</h3><p>Periksa jaringan internet kamu.</p></div>';
+    }
+  });
+}
+
+function detachFeedListeners() {
+  if (postsUnsub) { postsUnsub(); postsUnsub = null; }
+  commentUnsubs.forEach(unsub => unsub());
+  commentUnsubs.clear();
+  state.feedKey = "";
+  setLive(false, "");
+}
+
+function attachCommentListener(id) {
+  if (!fbReady) return;
+  if (commentUnsubs.has(id)) {
+    commentUnsubs.get(id)();
+    commentUnsubs.delete(id);
+  }
+  const commentsRef = dbRef(db, "comments/" + id);
+  const q = dbQuery(commentsRef, orderByChild("createdAt"), limitToLast(100));
+  const unsub = onValue(q, snap => {
+    const items = [];
+    snap.forEach(child => items.push(child.val() || {}));
+    items.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    const box = document.querySelector('[data-clist="' + id + '"]');
+    if (!box) return;
+    if (!items.length) {
+      box.innerHTML = '<div class="c-empty">Belum ada komentar.</div>';
+    } else {
+      box.innerHTML = items.map(c =>
+        '<div class="c-item">' +
+          '<div class="c-ava">' + esc((c.author || "?").charAt(0).toUpperCase()) + '</div>' +
+          '<div class="c-body"><span class="c-name">' + esc(c.author) + '</span>' + esc(c.text) + '</div>' +
+        '</div>'
+      ).join("");
+    }
+    const countEl = document.querySelector('[data-count="' + id + '"]');
+    if (countEl) countEl.textContent = items.length;
+    const wasBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+    if (wasBottom) box.scrollTop = box.scrollHeight;
+  }, err => {
+    console.error("[Sharing-it] comments listener error:", err);
+    const box = document.querySelector('[data-clist="' + id + '"]');
+    if (box) box.innerHTML = '<div class="c-empty">Gagal memuat komentar.</div>';
+  });
+  commentUnsubs.set(id, unsub);
+}
+
+function detachCommentListener(id) {
+  if (commentUnsubs.has(id)) {
+    commentUnsubs.get(id)();
+    commentUnsubs.delete(id);
   }
 }
 
+function startTimesTimer() {
+  if (state.timesTimer) return;
+  state.timesTimer = setInterval(() => {
+    if (state.screen !== "feed") return;
+    document.querySelectorAll("[data-post]").forEach(p => {
+      const id = p.dataset.post;
+      const post = state.posts.find(x => x.id === id);
+      if (!post) return;
+      const timeEl = p.querySelector(".post-time");
+      if (timeEl) timeEl.textContent = timeAgo(post.createdAt);
+    });
+  }, 30000);
+}
+function stopTimesTimer() {
+  if (state.timesTimer) { clearInterval(state.timesTimer); state.timesTimer = null; }
+}
+
+/* ============ RENDER FEED ============ */
 function renderFeed() {
   const list = $("#feedList");
+  const scroll = $("#feedScroll");
+  const scrollTop = scroll ? scroll.scrollTop : 0;
+
+  commentUnsubs.forEach(unsub => unsub());
+  commentUnsubs.clear();
+
+  const inputs = {};
+  document.querySelectorAll("[data-cinput]").forEach(inp => {
+    if (inp.value) inputs[inp.dataset.cinput] = inp.value;
+  });
+
   if (!state.posts.length) {
     list.innerHTML =
       '<div class="empty">' +
@@ -1428,6 +1512,7 @@ function renderFeed() {
       '</div>';
     return;
   }
+
   const uid = state.user ? state.user.uid : null;
   list.innerHTML = state.posts.map(p => {
     const likes = p.likes || {};
@@ -1464,52 +1549,19 @@ function renderFeed() {
     '</article>';
   }).join("");
 
-  state.posts.forEach(p => {
-    countComments(p.id);
-    if (state.expanded.has(p.id)) loadComments(p.id);
+  Object.keys(inputs).forEach(id => {
+    const inp = document.querySelector('[data-cinput="' + id + '"]');
+    if (inp) inp.value = inputs[id];
   });
+
+  state.expanded.forEach(id => {
+    if (state.posts.some(p => p.id === id)) attachCommentListener(id);
+  });
+
+  if (scroll) scroll.scrollTop = scrollTop;
 }
 
-async function countComments(id) {
-  if (!fbReady) return;
-  try {
-    const snap = await dbGet(dbRef(db, "comments/" + id));
-    let n = 0; snap.forEach(() => { n++; });
-    const el = document.querySelector('[data-count="' + id + '"]');
-    if (el) el.textContent = n;
-  } catch (e) {
-    const el = document.querySelector('[data-count="' + id + '"]');
-    if (el) el.textContent = "0";
-  }
-}
-
-async function loadComments(id) {
-  const box = document.querySelector('[data-clist="' + id + '"]');
-  if (!box) return;
-  if (box.dataset.loaded === "1") return;
-  box.innerHTML = '<div class="c-empty">Memuat...</div>';
-  try {
-    const snap = await dbGet(dbRef(db, "comments/" + id));
-    const items = [];
-    snap.forEach(child => items.push(child.val() || {}));
-    items.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-    if (!items.length) {
-      box.innerHTML = '<div class="c-empty">Belum ada komentar.</div>';
-    } else {
-      box.innerHTML = items.map(c =>
-        '<div class="c-item">' +
-          '<div class="c-ava">' + esc((c.author || "?").charAt(0).toUpperCase()) + '</div>' +
-          '<div class="c-body"><span class="c-name">' + esc(c.author) + '</span>' + esc(c.text) + '</div>' +
-        '</div>'
-      ).join("");
-    }
-    box.dataset.loaded = "1";
-    box.scrollTop = box.scrollHeight;
-  } catch (e) {
-    box.innerHTML = '<div class="c-empty">Gagal memuat.</div>';
-  }
-}
-
+/* ============ ACTIONS ============ */
 async function doLike(id, btn) {
   if (!fbReady || !state.user) { toast("Menyambungkan..."); return; }
   const now = Date.now();
@@ -1522,6 +1574,7 @@ async function doLike(id, btn) {
   const likeRef = dbRef(db, "posts/" + id + "/likes/" + uid);
   const p = state.posts.find(x => x.id === id);
   const wasLiked = p && p.likes && p.likes[uid];
+
   if (p) {
     p.likes = p.likes || {};
     if (wasLiked) delete p.likes[uid];
@@ -1530,6 +1583,7 @@ async function doLike(id, btn) {
     const span = btn.querySelector("[data-likes]");
     if (span) span.textContent = Object.keys(p.likes).length;
   }
+
   try {
     if (wasLiked) await dbRemove(likeRef);
     else await dbSet(likeRef, Date.now());
@@ -1566,11 +1620,6 @@ async function sendComment(id) {
     const newRef = dbPush(dbRef(db, "comments/" + id));
     await dbSet(newRef, { text, author: nick, uid: state.user.uid, createdAt: Date.now() });
     input.value = "";
-    const box = document.querySelector('[data-clist="' + id + '"]');
-    if (box) box.dataset.loaded = "0";
-    await loadComments(id); countComments(id);
-    const list = document.querySelector('[data-clist="' + id + '"]');
-    if (list) list.scrollTop = list.scrollHeight;
   } catch (e) {
     console.error(e);
     toast("Gagal mengirim komentar");
@@ -1598,362 +1647,4 @@ function ensureNick() {
       state.nick = v; localStorage.setItem("sharingit_nick", v);
       closeModal(); resolve(v);
     };
-    $("#nickSave").addEventListener("click", save);
-    inp.addEventListener("keydown", e => { if (e.key === "Enter") save(); });
-  });
-}
-
-async function doPost() {
-  if (state.posting) return;
-  if (!fbReady || !state.user) { toast("Menyambungkan ke server..."); return; }
-  if (!state.elements.length) { toast("Tambahkan minimal 1 elemen"); return; }
-
-  $("#edPublish").disabled = true;
-  loading(true);
-  let dataUrl = "";
-  try {
-    const r = await exportImage();
-    dataUrl = r.dataUrl;
-  } catch (e) {
-    console.error(e);
-    loading(false); $("#edPublish").disabled = false;
-    toast(e.message === "TOO_LARGE" ? "Karya terlalu besar. Kurangi foto atau teks." : "Gagal membuat gambar", 3200);
-    return;
-  }
-  loading(false);
-  $("#edPublish").disabled = false;
-
-  const nick = await ensureNick();
-  const sizeKB = Math.round(dataUrl.length / 1024);
-
-  openModal(
-    '<h2 class="modal-title">Publikasikan</h2>' +
-    '<p class="modal-sub">Karya akan tampil publik di feed. Ukuran akhir: <span class="mono">' + sizeKB + ' KB</span></p>' +
-    '<img class="preview-thumb" src="' + dataUrl + '" alt="">' +
-    '<div class="field"><label>Judul</label><input id="pTitle" maxlength="80" placeholder="Kasih judul..." autocomplete="off"></div>' +
-    '<div class="field"><label>Deskripsi <span style="color:var(--text-3);font-weight:400">opsional</span></label><textarea id="pDesc" maxlength="500" rows="3" placeholder="Cerita singkat tentang karya ini..."></textarea></div>' +
-    '<div class="field"><label>Nama</label><input id="pAuthor" maxlength="24" value="' + esc(nick) + '" autocomplete="off"></div>' +
-    '<div class="modal-actions">' +
-      '<button class="btn btn-outline" id="pubCancel" style="flex:1">Batal</button>' +
-      '<button class="btn btn-primary" id="pubGo" style="flex:1.5">Publikasikan</button>' +
-    '</div>'
-  );
-  setTimeout(() => $("#pTitle").focus(), 200);
-  $("#pubCancel").addEventListener("click", closeModal);
-  $("#pubGo").addEventListener("click", async () => {
-    const title = $("#pTitle").value.trim().slice(0, 80);
-    const description = $("#pDesc").value.trim().slice(0, 500);
-    const author = $("#pAuthor").value.trim().slice(0, 24) || "Anonim";
-    if (!title) { toast("Judul wajib diisi"); return; }
-    state.nick = author; localStorage.setItem("sharingit_nick", author);
-    state.posting = true;
-    $("#pubGo").disabled = true;
-    loading(true);
-    try {
-      const uid = state.user.uid;
-      const newRef = dbPush(dbRef(db, "posts"));
-      await dbSet(newRef, {
-        title, description, author, uid,
-        imageUrl: dataUrl, createdAt: Date.now()
-      });
-      closeModal();
-      loading(false);
-      state.posting = false;
-      resetEditor();
-      go("feed");
-      toast("Karya terpublikasi.");
-    } catch (e) {
-      console.error(e);
-      loading(false); state.posting = false;
-      $("#pubGo").disabled = false;
-      const msg = (e && e.message) || "";
-      if (/permission|denied/i.test(msg)) toast("Ditolak rules. Cek database.rules.json", 3800);
-      else if (/too large|exceeds/i.test(msg)) toast("Karya terlalu besar untuk Firebase.", 3200);
-      else toast("Gagal memposting. Coba lagi.", 3000);
-    }
-  });
-}
-
-function resetEditor() {
-  state.elements = [];
-  state.selected = null;
-  state.elZ = 1;
-  domMap.forEach(d => d.remove());
-  domMap.clear();
-  state.ratio = "1:1";
-  state.bg = "#ffffff";
-  if (state.screen === "editor") { fitStage(); renderPanel(); }
-}
-
-function creditModal() {
-  openModal(
-    '<h2 class="modal-title">Tentang aplikasi</h2>' +
-    '<p class="modal-sub">Sekilas tentang siapa yang membuat dan kenapa.</p>' +
-    '<div class="credit-box">' +
-      '<h3>Sharing Credits</h3>' +
-      '<p>Buatan siswa kelas 10 yang terinspirasi dari Whatsapp dan Canva. Karena tak ada aktivitas, dia membuat aplikasi-website dengan fitur mengirim dan mengedit foto ke publik.</p>' +
-    '</div>' +
-    '<div class="credit-note">' + SVG.plain + ' v1.0 · tanpa framework, tanpa tracker</div>' +
-    '<div class="modal-actions">' +
-      '<button class="btn btn-outline btn-wide" id="creditClose">Tutup</button>' +
-    '</div>'
-  );
-  $("#creditClose").addEventListener("click", closeModal);
-}
-
-/* ============ EVENTS ============ */
-$("#btnOpenFeed").addEventListener("click", () => go("feed"));
-$("#btnCredit").addEventListener("click", creditModal);
-$("#feedBack").addEventListener("click", () => go("home"));
-$("#btnCompose").addEventListener("click", () => {
-  resetEditor();
-  go("editor");
-  setTimeout(() => { fitStage(); renderPanel(); }, 60);
-});
-$("#feedTheme").addEventListener("click", () => {
-  const order = ["mono", "pink", "sky"];
-  const i = order.indexOf(state.theme);
-  setTheme(order[(i + 1) % order.length]);
-});
-$("#edCancel").addEventListener("click", () => {
-  if (state.elements.length && !confirm("Buang semua perubahan?")) return;
-  resetEditor(); go("feed");
-});
-$("#edPublish").addEventListener("click", doPost);
-$$("#themeSwitch button").forEach(d => d.addEventListener("click", () => setTheme(d.dataset.theme)));
-$("#modalRoot").addEventListener("click", e => { if (e.target.classList.contains("modal-bg")) closeModal(); });
-
-document.querySelector(".toolbar").addEventListener("click", e => {
-  const b = e.target.closest("[data-tool]");
-  if (!b) return;
-  const tool = b.dataset.tool;
-  if (tool === "photo") $("#fileInput").click();
-  if (tool === "text") addText();
-  if (tool === "bg" || tool === "ratio") {
-    if (state.selected) selectEl(null);
-    const p = $("#toolPanel");
-    if (p.classList.contains("open") && !state.selected) p.classList.remove("open");
-    else { state.selected = null; updateSelection(); renderPanel(); }
-  }
-});
-
-$("#fileInput").addEventListener("change", e => {
-  const f = e.target.files && e.target.files[0];
-  e.target.value = "";
-  if (f) addPhoto(f);
-});
-
-$("#feedList").addEventListener("click", e => {
-  const likeBtn = e.target.closest("[data-like]");
-  if (likeBtn) { doLike(likeBtn.dataset.like, likeBtn); return; }
-  const cmtBtn = e.target.closest("[data-cmt]");
-  if (cmtBtn) {
-    const id = cmtBtn.dataset.cmt;
-    const box = document.querySelector('[data-comments="' + id + '"]');
-    if (!box) return;
-    const willOpen = !box.classList.contains("open");
-    box.classList.toggle("open", willOpen);
-    if (willOpen) { state.expanded.add(id); loadComments(id); }
-    else state.expanded.delete(id);
-    return;
-  }
-  const sendBtn = e.target.closest("[data-csend]");
-  if (sendBtn) { sendComment(sendBtn.dataset.csend); return; }
-});
-
-$("#feedList").addEventListener("keydown", e => {
-  if (e.key === "Enter" && e.target.matches("[data-cinput]")) {
-    e.preventDefault();
-    sendComment(e.target.dataset.cinput);
-  }
-});
-
-window.addEventListener("resize", () => { if (state.screen === "editor") fitStage(); });
-window.addEventListener("orientationchange", () => { setTimeout(() => { if (state.screen === "editor") fitStage(); }, 250); });
-
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    if ($("#modalRoot").classList.contains("open")) { closeModal(); return; }
-    if (state.screen === "editor") $("#edCancel").click();
-    else if (state.screen === "feed") go("home");
-  }
-  if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && state.screen === "editor") {
-    e.preventDefault();
-    doPost();
-  }
-});
-
-window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault();
-  window.__deferredPrompt = e;
-  $("#installStrip").classList.add("on");
-});
-$("#btnInstall").addEventListener("click", async () => {
-  const p = window.__deferredPrompt;
-  if (!p) { toast("Gunakan menu browser → Tambahkan ke layar utama"); return; }
-  p.prompt();
-  const r = await p.userChoice;
-  if (r.outcome === "accepted") $("#installStrip").classList.remove("on");
-  window.__deferredPrompt = null;
-});
-window.addEventListener("appinstalled", () => {
-  $("#installStrip").classList.remove("on");
-});
-
-/* ============ PWA ============ */
-function makeIcon(size) {
-  const c = document.createElement("canvas");
-  c.width = c.height = size;
-  const x = c.getContext("2d");
-  const theme = state.theme;
-  const bgs = { mono: "#171717", pink: "#be185d", sky: "#0369a1" };
-  x.fillStyle = bgs[theme] || "#171717";
-  roundRectPath(x, 0, 0, size, size, size * 0.22);
-  x.fill();
-  const p = size * 0.26;
-  const r = size * 0.11;
-  x.strokeStyle = "#ffffff";
-  x.lineWidth = size * 0.055;
-  x.lineJoin = "round";
-  roundRectPath(x, p, p, size - p * 2, size - p * 2, r);
-  x.stroke();
-  x.fillStyle = "#ffffff";
-  x.beginPath();
-  x.arc(size * 0.4, size * 0.4, size * 0.055, 0, Math.PI * 2);
-  x.fill();
-  x.beginPath();
-  x.moveTo(size * 0.3, size * 0.68);
-  x.lineTo(size * 0.46, size * 0.48);
-  x.lineTo(size * 0.58, size * 0.68);
-  x.closePath();
-  x.fill();
-  return c.toDataURL("image/png");
-}
-
-function setupPWA() {
-  const icon192 = makeIcon(192);
-  const icon512 = makeIcon(512);
-  const fav = document.createElement("link");
-  fav.rel = "icon";
-  fav.href = icon192;
-  document.head.appendChild(fav);
-  const apple = document.createElement("link");
-  apple.rel = "apple-touch-icon";
-  apple.href = icon192;
-  document.head.appendChild(apple);
-  const scope = location.href.replace(/[^/]*$/, "");
-  const manifest = {
-    name: "Sharing-it",
-    short_name: "Sharing-it",
-    description: "Editor foto ringan dengan feed publik.",
-    start_url: location.href,
-    scope: scope,
-    display: "standalone",
-    orientation: "any",
-    background_color: "#fafafa",
-    theme_color: "#fafafa",
-    icons: [
-      { src: icon192, sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: icon512, sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: icon512, sizes: "512x512", type: "image/png", purpose: "maskable" }
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
-  const link = document.createElement("link");
-  link.rel = "manifest";
-  link.href = URL.createObjectURL(blob);
-  document.head.appendChild(link);
-}
-
-/* ============ FIREBASE ============ */
-const CONSOLE_AUTH_URL = "https://console.firebase.google.com/project/sharing-it-f9e36/authentication/providers";
-const CONSOLE_RTDB_URL = "https://console.firebase.google.com/project/sharing-it-f9e36/database/sharing-it-f9e36-default-rtdb/rules";
-
-async function initFirebase() {
-  try {
-    if (!app) {
-      app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      db = getDatabase(app);
-      onAuthStateChanged(auth, u => { if (u) state.user = u; });
-    }
-    const cred = await signInAnonymously(auth);
-    state.user = cred.user;
-    fbReady = true;
-    fbError = "";
-    hideBanner();
-    return true;
-  } catch (e) {
-    fbReady = false;
-    const code = (e && e.code) || "";
-    const msg = (e && e.message) || "";
-    console.error("[Sharing-it] Firebase init error:", code, msg);
-
-    if (code === "auth/admin-restricted-operation") {
-      fbError = "Anonymous sign-in belum diaktifkan di project Firebase ini.";
-      showBanner({
-        icon: SVG.lock,
-        title: "Aktifkan Anonymous sign-in",
-        msg: "Firebase menolak login anonim. Buka Firebase Console → Authentication → Sign-in method, lalu aktifkan provider Anonymous. Setelah itu refresh halaman ini.",
-        actions: [{ label: "Buka Firebase Console", href: CONSOLE_AUTH_URL }],
-        buttons: [{ label: "Sudah aktif, coba lagi", onClick: async () => { hideBanner(); await initFirebase(); if (state.screen === "feed") loadFeed(); } }]
-      });
-    } else if (code === "auth/operation-not-allowed") {
-      fbError = "Provider sign-in dinonaktifkan.";
-      showBanner({
-        icon: SVG.lock,
-        title: "Provider dinonaktifkan",
-        msg: "Aktifkan provider Anonymous di Firebase Console → Authentication → Sign-in method.",
-        actions: [{ label: "Buka Firebase Console", href: CONSOLE_AUTH_URL }]
-      });
-    } else if (code === "auth/network-request-failed") {
-      fbError = "Tidak ada koneksi internet.";
-      showBanner({
-        icon: SVG.wifi,
-        title: "Koneksi gagal",
-        msg: "Periksa jaringan internet lalu coba lagi.",
-        buttons: [{ label: "Coba lagi", onClick: async () => { hideBanner(); await initFirebase(); } }]
-      });
-    } else if (code === "auth/invalid-api-key" || code === "auth/configuration-not-found") {
-      fbError = "Konfigurasi Firebase tidak valid.";
-      showBanner({
-        icon: SVG.alert,
-        title: "Konfigurasi salah",
-        msg: "Periksa firebaseConfig (apiKey, authDomain, databaseURL).",
-      });
-    } else if (/database/i.test(msg) || code === "database/invalid-url") {
-      fbError = "databaseURL salah atau database belum dibuat.";
-      showBanner({
-        icon: SVG.alert,
-        title: "Realtime Database belum siap",
-        msg: "Buat Realtime Database di Firebase Console, lalu copy URL-nya ke firebaseConfig.databaseURL.",
-        actions: [{ label: "Buka Realtime Database", href: "https://console.firebase.google.com/project/sharing-it-f9e36/database" }]
-      });
-    } else {
-      fbError = msg || "Gagal menyambung ke Firebase.";
-      showBanner({
-        icon: SVG.alert,
-        title: "Gagal menyambung",
-        msg: (msg || "Unknown error").slice(0, 160),
-        buttons: [{ label: "Coba lagi", onClick: async () => { hideBanner(); await initFirebase(); } }]
-      });
-    }
-    return false;
-  }
-}
-
-/* ============ BOOT ============ */
-function boot() {
-  setTheme(state.theme);
-  setupPWA();
-  fitStage();
-  renderPanel();
-  initFirebase().then(() => {
-    if (state.screen === "feed") loadFeed();
-  });
-}
-
-boot();
-</script>
-</body>
-</html>
+    $("#nickSave").addEventListener("click", save
